@@ -21,13 +21,18 @@ from collectors.models import (
     CurrencyRatesDTO,
     CurrencyInfoDTO,
     WeatherInfoDTO,
+    NewsInfoDTO,
 )
 from settings import (
     MEDIA_PATH,
+    NEWS_PATH,
     CACHE_TTL_COUNTRY,
     CACHE_TTL_CURRENCY_RATES,
     CACHE_TTL_WEATHER,
+    CACHE_TTL_NEWS,
 )
+
+from src.clients.news import NewsClient
 
 
 class CountryCollector(BaseCollector):
@@ -103,6 +108,9 @@ class CountryCollector(BaseCollector):
                         population=item["population"],
                         subregion=item["subregion"],
                         timezones=item["timezones"],
+                        area=item["area"],
+                        latitude=item["latitude"],
+                        longitude=item["longitude"],
                     )
                 )
 
@@ -219,8 +227,77 @@ class WeatherCollector(BaseCollector):
                 humidity=result["main"]["humidity"],
                 wind_speed=result["wind"]["speed"],
                 description=result["weather"][0]["description"],
+                visibility=result["visibility"],
+                dt=result["dt"],
+                timezone=result["timezone"] // 3600,
             )
 
+        return None
+
+
+class NewsCollector(BaseCollector):
+    """
+    Сбор информации о прогнозе погоды для столиц стран.
+    """
+
+    def __init__(self) -> None:
+        self.client = NewsClient()
+
+    @staticmethod
+    async def get_file_path(filename: str = "", **kwargs: Any) -> str:
+        return f"{MEDIA_PATH}/news/{filename}.json"
+
+    @staticmethod
+    async def get_cache_ttl() -> int:
+        return CACHE_TTL_NEWS
+
+    async def collect(
+        self, locations: FrozenSet[LocationDTO] = frozenset(), **kwargs: Any
+    ) -> None:
+
+        target_dir_path = f"{MEDIA_PATH}/news"
+        # если целевой директории еще не существует, то она создается
+        if not await aiofiles.os.path.exists(target_dir_path):
+            await aiofiles.os.mkdir(target_dir_path)
+
+        for location in locations:
+            filename = f"{location.capital}_{location.alpha2code}".lower()
+            if await self.cache_invalid(filename=filename):
+                # если кэш уже невалиден, то актуализируем его
+                result = await self.client.get_news(location.capital)
+                if result:
+                    result_str = json.dumps(result)
+                    async with aiofiles.open(
+                        await self.get_file_path(filename), mode="w"
+                    ) as file:
+                        await file.write(result_str)
+
+    @classmethod
+    async def read(cls, location: LocationDTO) -> Optional[WeatherInfoDTO]:
+        """
+        Чтение данных из кэша.
+
+        :param location:
+        :return:
+        """
+
+        filename = f"{location.capital}_{location.alpha2code}".lower()
+        async with aiofiles.open(await cls.get_file_path(filename), mode="r") as file:
+            content = await file.read()
+
+        result = json.loads(content)
+        if result:
+            return [
+                NewsInfoDTO(
+                    source=article["source"]["name"],
+                    title=article["title"],
+                    description=article["description"],
+                    url=article["url"],
+                    published_at=article["publishedAt"],
+                    content=article["content"],
+                )
+                for article in result["articles"]
+            ]
         return None
 
 
@@ -233,11 +310,18 @@ class Collectors:
         )
 
     @staticmethod
+    async def gather_items(locations: Optional[FrozenSet[LocationDTO]]) -> tuple:
+        return await asyncio.gather(
+            WeatherCollector().collect(locations),
+            NewsCollector().collect(locations),
+        )
+
+    @staticmethod
     def collect() -> None:
         loop = asyncio.get_event_loop()
         try:
             results = loop.run_until_complete(Collectors.gather())
-            loop.run_until_complete(WeatherCollector().collect(results[1]))
+            loop.run_until_complete(Collectors.gather_items(results[1]))
             loop.run_until_complete(loop.shutdown_asyncgens())
 
         finally:
