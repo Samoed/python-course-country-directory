@@ -5,19 +5,10 @@
 from difflib import SequenceMatcher
 from typing import Optional
 
-from collectors.collector import (
-    CountryCollector,
-    CurrencyRatesCollector,
-    NewsCollector,
-    WeatherCollector,
-)
-from collectors.models import (
-    CountryDTO,
-    CurrencyInfoDTO,
-    LocationDTO,
-    LocationInfoDTO,
-    WeatherInfoDTO,
-)
+from collectors.collector import (CountryCollector, CurrencyRatesCollector,
+                                  NewsCollector, WeatherCollector)
+from collectors.models import (CountryDTO, CurrencyInfoDTO, LocationDTO,
+                               LocationInfoDTO, WeatherInfoDTO)
 
 
 class Reader:

@@ -3,7 +3,7 @@
 """
 import time
 from abc import ABC, abstractmethod
-from typing import Iterable, Any, Optional
+from typing import Any, Iterable, Optional
 
 import aiofiles
 import aiofiles.os
@@ -37,7 +37,7 @@ class BaseCollector(ABC):
         """
 
         file_path = await self.get_file_path(**kwargs)
-        # print(file_path, "exists: ", await aiofiles.os.path.isfile(file_path), "size: ", await aiofiles.os.path.getsize(file_path), "time: ", time.time() - await aiofiles.os.path.getmtime(file_path))
+
         if (
             # проверка существования файла
             # (если файл не существует)

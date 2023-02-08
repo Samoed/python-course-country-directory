@@ -7,8 +7,6 @@ from typing import Optional
 
 # путь к директории для сохранения файлов
 MEDIA_PATH: str = os.getenv("MEDIA_PATH", "../media")
-# путь к директории для сохранения файлов новостей
-NEWS_PATH: str = os.getenv("CACHE_PATH", "../news")
 
 # путь к директории для логирования
 LOGGING_PATH: str = os.getenv("LOGGING_PATH", "../logs")

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import asyncio
 import json
-from typing import Any, Optional, FrozenSet
+from typing import Any, FrozenSet, Optional
 
 import aiofiles
 import aiofiles.os
@@ -15,24 +15,11 @@ from clients.country import CountryClient
 from clients.currency import CurrencyClient
 from clients.weather import WeatherClient
 from collectors.base import BaseCollector
-from collectors.models import (
-    LocationDTO,
-    CountryDTO,
-    CurrencyRatesDTO,
-    CurrencyInfoDTO,
-    WeatherInfoDTO,
-    NewsInfoDTO,
-)
-from settings import (
-    MEDIA_PATH,
-    NEWS_PATH,
-    CACHE_TTL_COUNTRY,
-    CACHE_TTL_CURRENCY_RATES,
-    CACHE_TTL_WEATHER,
-    CACHE_TTL_NEWS,
-)
-
-from src.clients.news import NewsClient
+from collectors.models import (CountryDTO, CurrencyInfoDTO, CurrencyRatesDTO,
+                               LocationDTO, NewsInfoDTO, WeatherInfoDTO)
+from settings import (CACHE_TTL_COUNTRY, CACHE_TTL_CURRENCY_RATES,
+                      CACHE_TTL_NEWS, CACHE_TTL_WEATHER, MEDIA_PATH)
+from clients.news import NewsClient
 
 
 class CountryCollector(BaseCollector):

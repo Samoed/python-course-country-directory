@@ -48,7 +48,7 @@ class Renderer:
             "Давление": self.location_info.weather.pressure,
         }
 
-        first_column_width = max(len(key) for key in values.keys()) + 1
+        first_column_width = max(len(key) for key in values) + 1
         second_column_width = max(len(str(value)) for value in values.values()) + 1
         formatted_values = [("-" * (first_column_width + second_column_width + 3))]
         formatted_values.extend(
@@ -142,8 +142,17 @@ class Renderer:
         :param second_column_width: Ширина второй колонки.
         :return:
         """
+        if news is None:
+            return []
         values = []
-        first_column_names = ["Источник", "Новость", "Ссылка", "Дата", "Описание", "Текст"]
+        first_column_names = [
+            "Источник",
+            "Новость",
+            "Ссылка",
+            "Дата",
+            "Описание",
+            "Текст",
+        ]
         for item in news:
             for first_col_name, content in zip(
                 first_column_names,

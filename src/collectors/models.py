@@ -3,7 +3,7 @@
 """
 from datetime import datetime
 
-from pydantic import Field, BaseModel
+from pydantic import BaseModel, Field
 
 
 class HashableBaseModel(BaseModel):
@@ -242,4 +242,4 @@ class LocationInfoDTO(BaseModel):
     location: CountryDTO
     weather: WeatherInfoDTO
     currency_rates: dict[str, float]
-    news: list[NewsInfoDTO]
+    news: list[NewsInfoDTO] | None
