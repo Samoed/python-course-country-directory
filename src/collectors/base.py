@@ -3,7 +3,8 @@
 """
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Iterable, Optional
+from collections.abc import Iterable
+from typing import Any
 
 import aiofiles
 import aiofiles.os
@@ -15,7 +16,7 @@ class BaseCollector(ABC):
     """
 
     @abstractmethod
-    async def collect(self, **kwargs: Any) -> Optional[Iterable[Any]]:
+    async def collect(self, **kwargs: Any) -> Iterable[Any] | None:
         ...
 
     @staticmethod

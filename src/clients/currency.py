@@ -1,7 +1,6 @@
 """
 Функции для взаимодействия с внешним сервисом-провайдером данных о курсах валют.
 """
-from typing import Optional
 
 from clients.base import BaseClient
 from settings import API_KEY_APILAYER
@@ -17,9 +16,9 @@ class CurrencyClient(BaseClient):
     async def get_base_url(self) -> str:
         return "https://api.apilayer.com/fixer/latest"
 
-    async def get_rates(self, base: str = "rub") -> Optional[dict]:
+    async def get_rates(self, base: str = "rub") -> dict | None:
         """
-         Получение данных о курсах валют.
+        Получение данных о курсах валют.
 
         :param base: Базовая валюта
         :return:

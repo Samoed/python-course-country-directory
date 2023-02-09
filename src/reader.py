@@ -3,12 +3,21 @@
 """
 
 from difflib import SequenceMatcher
-from typing import Optional
 
-from collectors.collector import (CountryCollector, CurrencyRatesCollector,
-                                  NewsCollector, WeatherCollector)
-from collectors.models import (CountryDTO, CurrencyInfoDTO, LocationDTO,
-                               LocationInfoDTO, WeatherInfoDTO)
+from collectors.collector import (
+    CountryCollector,
+    CurrencyRatesCollector,
+    NewsCollector,
+    WeatherCollector,
+)
+from collectors.models import (
+    CountryDTO,
+    CurrencyInfoDTO,
+    LocationDTO,
+    LocationInfoDTO,
+    NewsInfoDTO,
+    WeatherInfoDTO,
+)
 
 
 class Reader:
@@ -16,7 +25,7 @@ class Reader:
     Чтение сохраненных данных.
     """
 
-    async def find(self, location: str) -> Optional[LocationInfoDTO]:
+    async def find(self, location: str) -> LocationInfoDTO | None:
         """
         Поиск данных о стране по строке.
 
@@ -25,22 +34,21 @@ class Reader:
         """
 
         country = await self.find_country(location)
-        if country:
-            location = LocationDTO(
-                capital=country.capital, alpha2code=country.alpha2code
-            )
-            weather = await self.get_weather(location)
-            currency_rates = await self.get_currency_rates(country.currencies)
-            news = await self.get_news(location)
+        if not country:
+            return None
+        location_dto = LocationDTO(
+            capital=country.capital, alpha2code=country.alpha2code
+        )
+        weather = await self.get_weather(location_dto)
+        currency_rates = await self.get_currency_rates(country.currencies)
+        news = await self.get_news(location_dto)
 
-            return LocationInfoDTO(
-                location=country,
-                weather=weather,
-                currency_rates=currency_rates,
-                news=news,
-            )
-
-        return None
+        return LocationInfoDTO(
+            location=country,
+            weather=weather,
+            currency_rates=currency_rates,
+            news=news,
+        )
 
     @staticmethod
     async def get_currency_rates(currencies: set[CurrencyInfoDTO]) -> dict[str, float]:
@@ -61,7 +69,7 @@ class Reader:
         return result
 
     @staticmethod
-    async def get_weather(location: LocationDTO) -> Optional[WeatherInfoDTO]:
+    async def get_weather(location: LocationDTO) -> WeatherInfoDTO | None:
         """
         Получение данных о погоде.
 
@@ -70,7 +78,7 @@ class Reader:
         """
         return await WeatherCollector.read(location=location)
 
-    async def get_news(self, location: LocationDTO):
+    async def get_news(self, location: LocationDTO) -> list[NewsInfoDTO] | None:
         """
         Получение новостей по стране.
 
@@ -79,7 +87,7 @@ class Reader:
         """
         return await NewsCollector.read(location=location)
 
-    async def find_country(self, search: str) -> Optional[CountryDTO]:
+    async def find_country(self, search: str) -> CountryDTO | None:
         """
         Поиск страны.
 

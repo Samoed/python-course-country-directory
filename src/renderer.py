@@ -30,14 +30,14 @@ class Renderer:
 
         values = {
             "Страна": self.location_info.location.name,
-            "Столица": self.location_info.location.capital,
             "Регион": self.location_info.location.subregion,
             "Языки": await self._format_languages(),
             "Население страны": await self._format_population(),
             "Курсы валют": await self._format_currency_rates(),
             "Площадь": self.location_info.location.area,
-            "Долгота": self.location_info.location.latitude,
-            "Широта": self.location_info.location.longitude,
+            "Столица": self.location_info.location.capital,
+            "Широта": self.location_info.location.latitude,
+            "Долгота": self.location_info.location.longitude,
             "Время": self.location_info.weather.dt.strftime("%d.%m.%Y %H:%M"),
             "Часовой пояс": self.location_info.weather.timezone,
             "Погода": self.location_info.weather.temp,
@@ -86,7 +86,7 @@ class Renderer:
         """
 
         # pylint: disable=C0209
-        return "{:,}".format(self.location_info.location.population).replace(",", ".")
+        return f"{self.location_info.location.population:,}".replace(",", ".")
 
     async def _format_currency_rates(self) -> str:
         """
@@ -132,7 +132,10 @@ class Renderer:
         return values
 
     async def _format_news(
-        self, news: list[NewsInfoDTO], first_column_width: int, second_column_width: int
+        self,
+        news: list[NewsInfoDTO] | None,
+        first_column_width: int,
+        second_column_width: int,
     ) -> list[str]:
         """
         Форматирование информации о новостях.

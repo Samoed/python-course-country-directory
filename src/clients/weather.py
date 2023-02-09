@@ -1,7 +1,6 @@
 """
 Функции для взаимодействия с внешним сервисом-провайдером данных о погоде.
 """
-from typing import Optional
 
 from clients.base import BaseClient
 from settings import API_KEY_OPENWEATHER
@@ -17,7 +16,7 @@ class WeatherClient(BaseClient):
     async def get_base_url(self) -> str:
         return "https://api.openweathermap.org/data/2.5/weather"
 
-    async def get_weather(self, location: str) -> Optional[dict]:
+    async def get_weather(self, location: str) -> dict | None:
         """
         Получение данных о погоде.
 

@@ -5,7 +5,7 @@
 from abc import ABC, abstractmethod
 from http import HTTPStatus
 from logging import getLogger
-from typing import Any, Optional
+from typing import Any
 
 import aiohttp
 
@@ -30,7 +30,7 @@ class BaseClient(ABC):
         :return:
         """
 
-    async def _request(self, endpoint: str) -> Optional[dict]:
+    async def _request(self, endpoint: str) -> dict | None:
         """
         Формирование и выполнение запроса.
 
@@ -43,5 +43,7 @@ class BaseClient(ABC):
             ) as response:
                 if response.status == HTTPStatus.OK:
                     return await response.json()
-                logger.error("Error: %s %s %s", response.url, response.status, response.reason)
+                logger.error(
+                    "Error: %s %s %s", response.url, response.status, response.reason
+                )
                 return None

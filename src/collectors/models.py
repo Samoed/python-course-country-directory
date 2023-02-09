@@ -70,30 +70,21 @@ class CountryDTO(BaseModel):
         CountryDTO(
             capital="Mariehamn",
             alpha2code="AX",
-            alt_spellings=[
-              "AX",
-              "Aaland",
-              "Aland",
-              "Ahvenanmaa"
-            ],
+            alt_spellings=["AX", "Aaland", "Aland", "Ahvenanmaa"],
             currencies={
-                CurrencyInfoDTO(
-                    code="EUR",
-                )
+                CurrencyInfoDTO(code="EUR"),
             },
-            flag="http://assets.promptapi.com/flags/AX.svg",
+            flag="https://restcountries.eu/data/ala.svg",
             languages={
-                LanguagesInfoDTO(
-                    name="Swedish",
-                    native_name="svenska"
-                )
+                LanguagesInfoDTO(name="Swedish", native_name="svenska"),
             },
-            name="\u00c5land Islands",
+            name="Åland Islands",
             population=28875,
             subregion="Northern Europe",
-            timezones=[
-                "UTC+02:00",
-            ],
+            timezones=["UTC+02:00"],
+            area=1580.0,
+            latitude=60.116667,
+            longitude=19.9,
         )
     """
 
@@ -139,11 +130,14 @@ class WeatherInfoDTO(BaseModel):
     .. code-block::
 
         WeatherInfoDTO(
-            temp=13.92,
-            pressure=1023,
-            humidity=54,
-            wind_speed=4.63,
-            description="scattered clouds",
+            temp=5.0,
+            pressure=1013,
+            humidity=93,
+            wind_speed=1.03,
+            description="light rain",
+            visibility=10000,
+            dt=datetime.datetime(2021, 9, 14, 20, 0),
+            timezone=0,
         )
     """
 
