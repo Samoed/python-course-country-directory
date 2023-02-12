@@ -1,8 +1,9 @@
 """
 Описание моделей данных (DTO).
 """
+from datetime import datetime
 
-from pydantic import Field, BaseModel
+from pydantic import BaseModel, Field
 
 
 class HashableBaseModel(BaseModel):
@@ -69,30 +70,21 @@ class CountryDTO(BaseModel):
         CountryDTO(
             capital="Mariehamn",
             alpha2code="AX",
-            alt_spellings=[
-              "AX",
-              "Aaland",
-              "Aland",
-              "Ahvenanmaa"
-            ],
+            alt_spellings=["AX", "Aaland", "Aland", "Ahvenanmaa"],
             currencies={
-                CurrencyInfoDTO(
-                    code="EUR",
-                )
+                CurrencyInfoDTO(code="EUR"),
             },
-            flag="http://assets.promptapi.com/flags/AX.svg",
+            flag="https://restcountries.eu/data/ala.svg",
             languages={
-                LanguagesInfoDTO(
-                    name="Swedish",
-                    native_name="svenska"
-                )
+                LanguagesInfoDTO(name="Swedish", native_name="svenska"),
             },
-            name="\u00c5land Islands",
+            name="Åland Islands",
             population=28875,
             subregion="Northern Europe",
-            timezones=[
-                "UTC+02:00",
-            ],
+            timezones=["UTC+02:00"],
+            area=1580.0,
+            latitude=60.116667,
+            longitude=19.9,
         )
     """
 
@@ -106,6 +98,9 @@ class CountryDTO(BaseModel):
     population: int
     subregion: str
     timezones: list[str]
+    area: float | None
+    latitude: float | None
+    longitude: float | None
 
 
 class CurrencyRatesDTO(BaseModel):
@@ -135,11 +130,14 @@ class WeatherInfoDTO(BaseModel):
     .. code-block::
 
         WeatherInfoDTO(
-            temp=13.92,
-            pressure=1023,
-            humidity=54,
-            wind_speed=4.63,
-            description="scattered clouds",
+            temp=5.0,
+            pressure=1013,
+            humidity=93,
+            wind_speed=1.03,
+            description="light rain",
+            visibility=10000,
+            dt=datetime.datetime(2021, 9, 14, 20, 0),
+            timezone=0,
         )
     """
 
@@ -148,6 +146,33 @@ class WeatherInfoDTO(BaseModel):
     humidity: int
     wind_speed: float
     description: str
+    visibility: int
+    dt: datetime
+    timezone: int
+
+
+class NewsInfoDTO(BaseModel):
+    """
+    Модель данных о новости.
+
+    .. code-block::
+
+        NewsDTO(
+            source="CNN",
+            title="The latest news about the coronavirus pandemic",
+            description="The latest news about the coronavirus pandemic",
+            url="https://www.cnn.com/world/live-news/coronavirus-pandemic-09-14-21-intl/index.html",
+            published_at="2021-09-14T20:00:00Z",
+            content="The latest news about the coronavirus pandemic",
+        )
+    """
+
+    source: str
+    title: str
+    description: str
+    url: str
+    published_at: datetime
+    content: str
 
 
 class LocationInfoDTO(BaseModel):
@@ -195,9 +220,20 @@ class LocationInfoDTO(BaseModel):
             currency_rates={
                 "EUR": 0.016503,
             },
+            news=[
+                NewsDTO(
+                    source="CNN",
+                    title="The latest news about the coronavirus pandemic",
+                    description="The latest news about the coronavirus pandemic",
+                    url="https://www.cnn.com/world/live-news/coronavirus-pandemic-09-14-21-intl/index.html",
+                    published_at="2021-09-14T20:00:00Z",
+                    content="The latest news about the coronavirus pandemic",
+                )
+            ]
         )
     """
 
     location: CountryDTO
     weather: WeatherInfoDTO
     currency_rates: dict[str, float]
+    news: list[NewsInfoDTO] | None

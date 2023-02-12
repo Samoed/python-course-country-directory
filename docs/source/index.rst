@@ -159,6 +159,29 @@
 .. currentmodule:: main
 .. autofunction:: process_input
 
+Клиенты для сбора данных
+========================
+
+Клиент для сбора данных о странах
+---------------------------------
+.. automodule:: clients.country
+   :members:
+
+Клиент для сбора данных о валютах
+---------------------------------
+.. automodule:: clients.currency
+   :members:
+
+Клиент для сбора данных о погоде
+--------------------------------
+.. automodule:: clients.weather
+   :members:
+
+Клиент для сбора данных о новостях
+----------------------------------
+.. automodule:: clients.news
+   :members:
+
 Сбор данных
 ===========
 .. automodule:: collectors.collector
